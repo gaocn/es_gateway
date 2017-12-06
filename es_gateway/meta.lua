@@ -7,9 +7,10 @@ local version = setmetatable({
     major = 1,
     minor = 11,
     patch = 2,
+    suffix = "suffix"
 }, {
     __tostring = function(t)
-        return string.format("%d.%d.%d%s", t.majot, t.minor, t.patch, t.suffix or "")
+        return string.format("%d.%d.%d%s", t.major, t.minor, t.patch, t.suffix)
     end
 })
 
