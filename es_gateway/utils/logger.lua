@@ -1,11 +1,11 @@
---[[
-    @Date 2017-11-07
-    @Description: logger module used to log msg convinencely, supporting turn ON/OFF logging message.
-
-    NOTE: all retrieve infomation should be lower case ~_~
-]]--
-
--- to reuse this module, define this file as a module which cause this module will be loaded only once. 
+--
+-- User: ¸ßÎÄÎÄ
+-- Date: 2017/12/6
+-- Description:
+--     logger module used to log msg convinencely, supporting turn ON/OFF logging message.
+--     NOTE: all retrieve infomation should be lower case ~_~
+--
+-- to reuse this module, define this file as a module which cause this module will be loaded only once.
 module('logger', package.seeall)
 
 -- debug < info < warn < error
