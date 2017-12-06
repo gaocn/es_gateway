@@ -10,6 +10,7 @@ local logger = require "es_gateway.utils.logger"
 logger.info("%s ---- %s", "This is a test", 'hello wordl')
 logger.disable()
 logger.debug("%s ---- %s", "This is a test", 'hello wordl')
+logger.set_priority(4)
 logger.warn("%s ---- %s", "This is a test", 'hello wordl')
 logger.enable()
 logger.error("%s ---- %s", "This is a test", 'hello wordl')
@@ -27,3 +28,5 @@ print(#a)
 if #a == 0 then
     print("nil")
 end
+
+print(tostring('nihao'))

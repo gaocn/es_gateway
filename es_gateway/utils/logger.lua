@@ -27,11 +27,11 @@ _M.s_levels = s_levels
 _M.default_level = _M._LEVELS.debug
 
 
-function _M.setPriority(pri)
+function _M.set_priority(pri)
     if pri ~= nil and pri >= 0 then
-        default_level = pri
+        _M.default_level = pri
     else
-        default_level = 1
+        _M.default_level = 1
     end
 end
 
