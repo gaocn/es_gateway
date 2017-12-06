@@ -21,6 +21,7 @@ logger('a', 'b')
 a={1}
 
 print(#a)
+
 table.remove(a, 1)
 print(#a)
 
