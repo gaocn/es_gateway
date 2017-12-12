@@ -1,0 +1,65 @@
+#@Cooperation:   ABC
+#@Author:  gww 
+#@Date: 2017-05-04
+#@Description: 
+#    lua read this file and parse relevant data for later use, for every request with uri:
+#       if URI is ON, then nginx allow this request.
+#       if URI is OFF, then nginx deny this request.
+#********************************************************************************************
+#format: URI [ALL,HEAD,GET,PUT POST,DELETE]  [ON|OFF]
+#exapmle: 
+#         /_refresh ALL OFF
+#        /_settings HEAD,GET ON
+#
+#Note: in order to accelerate process speed, this file is read only once at the start of nginx
+#
+#MARK:START
+#
+#index api
+/_settings          GET   ON
+/_open              ALL   OFF
+/_close             ALL   OFF
+/_shrink            ALL   OFF
+/_rollover          ALL   OFF
+/_aliases           ALL   OFF
+/_analyze           ALL   OFF
+/_template          ALL   OFF
+/_stats             ALL   OFF
+/_segments          ALL   OFF
+/_recovery          ALL   OFF
+/_shard_stores      ALL   OFF
+/_cache             ALL   OFF
+/_flush             ALL   OFF
+/_refresh           ALL   OFF
+/_forcemerge        ALL   OFF
+#
+# batch operation api
+/_mget              ALL   ON
+/_bulk              ALL   OFF
+/_update_by_query   ALL   OFF
+/_delete_by_query   ALL   OFF
+/_reindex           ALL   OFF
+/_mapping           GET   ON
+#
+#search api
+/_search            ALL   ON
+/_msearch           ALL   ON
+/_search_shards     ALL   OFF
+/_count             ALL   ON
+/_validate          ALL   ON
+/_explain           ALL   ON
+/_field_stats       ALL   ON
+#/_scroll
+#
+#cluster api
+/_cat              ALL   OFF
+/_nodes            ALL   OFF
+/_cluster          ALL   OFF
+/_tasks            ALL   OFF
+
+/_sql              POST  ON
+
+# indices/doc CRUD Control  format:  system_id    methods      ON/OFF
+#obs                  POST,PUT,DELETE   OFF
+#mbank                POST,PUT,DELETE   OFF
+#apm	              POST,PUT,DELETE   OFF

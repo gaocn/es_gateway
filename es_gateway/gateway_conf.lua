@@ -14,11 +14,18 @@ gateway_conf = {
     nginx_search_paths = {
         "/home/sm01/openresty-1.11.2/nginx/sbin",
     },
-    upstream_conf_path ="/home/sm01/openresty-1.11.2/nginx/conf/es_cluster_upstream.conf",
-     system_cluster_map = ngx.shared.system_cluster_map,
 
-     acl_table = ngx.shared.acl_table,
-     init_config = "/home/sm01/openresty-1.11.2/config",
-     acl_conf = "/home/sm01/openresty-1.11.2/nginx/conf/lua/api.acl"
+    upstream_conf_path ="/home/sm01/openresty-1.11.2/nginx/conf/es_cluster_upstream.conf",
+    system_cluster_map = ngx.shared.system_cluster_map,
+    acl_table = ngx.shared.acl_table,
+    acl_conf = "/home/sm01/openresty-1.11.2/lualib/es_gateway/api.acl",
+    init_config = "/home/sm01/openresty-1.11.2/config"
 
 }
+
+
+return setmetatable(gateway_conf, {
+    __tostring = function(tb)
+        return "This is es_gateway global configuration£¡"
+    end
+})
