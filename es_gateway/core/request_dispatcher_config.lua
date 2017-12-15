@@ -12,21 +12,8 @@
 --module('request_dispatcher_config', package.seeall)
 
 local logger = require "es_gateway.utils.logger"
--- local gateway_conf = require "es_gateway.gateway_conf"
---local fileName="/home/sm01/openresty-1.11.2/nginx/conf/es_cluster_upstream.conf"
---local SYSTEM_CLUSTER_MAP = ngx.shared.system_cluster_map
-
---[[ @func: split string into an array
-     EG: str = 'str1, str2, str3'
-         split(str) => {'str1', 'str2', 'str3'}
-]]--
-local function split(str, sep)
-    local sep = sep or "\t"
-    local fields = {}
-    local pattern = string.format("([^%s]+)", sep)
-    string.gsub(str, pattern , function(w) fields[#fields + 1] = w end)
-    return fields
-end
+local str_utils = require "es_gateway.utils.string"
+local split = str_utils.split
 
 -- 
 --  @refactor:

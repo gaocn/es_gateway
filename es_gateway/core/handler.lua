@@ -7,16 +7,12 @@
 --local dispatcher = require("request_dispatcher")
 local logger     = require "es_gateway.utils.logger"
 local dispatcher = require "es_gateway.core.request_dispatcher"
-
+local str_utils = require "es_gateway.utils.string"
+local escape_line = str_utils.escape_line
 
 logger.set_priority(1)
 
 --*********************  function definition  **************************--
-
-local function escape_line(id)
-    res, cnt = string.gsub(id,'%-','_')
-    return res
-end
 
 --[[
   function: split string into an array

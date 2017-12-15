@@ -7,12 +7,9 @@
 local logger  = require "es_gateway.utils.logger"
 local handler = require "es_gateway.core.handler"
 local redis_helper   = require "es_gateway.redis.redis_helper"
+local str_utils = require "es_gateway.utils.string"
+local escape_line = str_utils.escape_line
 logger.set_priority(1)
-
-local function escape_line(id)
-    res, cnt = string.gsub(id,'%-','_')
-    return res
-end
 
 --[[
     retrieve header

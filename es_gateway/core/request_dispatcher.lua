@@ -12,17 +12,12 @@
 
 local logger = require "es_gateway.utils.logger"
 local gateway_conf = require "es_gateway.gateway_conf"
+local str_utils = require "es_gateway.utils.string"
+local escape_wildcard = str_utils.escape_wildcard
+local truncate = str_utils.truncate
+local find_last = str_utils.find_last
 local SYSTEM_CLISTER_MAP = gateway_conf.system_cluster_map
 
--- @func escape_wildcard: replace lua wildcard'-' to'_', may be used to repace other wildcard
---   @param s: string to be processed
--- @returns
---   @param res: processed result
--- 
-local function escape_wildcard(s)
-    res, cnt = string.gsub(s,'%-','_')
-    return res
-end
 
 --[[
     retrieve system id from request data
@@ -77,7 +72,6 @@ end
     false 
       return false if there exists a system id which is different from others
 ]]--
-
 local function is_same_cluster(systemID)
     cluster = nil
     for key, id in pairs(systemID) do
@@ -92,23 +86,6 @@ local function is_same_cluster(systemID)
     end
 
     return true, cluster
-end
-
---[[
-    for request args like:
-      "?ClientIP=10.230.135.128"
-      "?stored_field=&ClientIP=10.233.87.241"
-    we need to truncate request parameter 'ClientIP', after processing we get
-      nil  "?stored_field"
-]]--
-local function truncate(txt, pat)
-    if txt ~= nil then
-        end_pos = string.find(txt, pat)
-        if end_pos ~= nil then
-            txt = string.sub(txt, 1, end_pos - 1)
-        end
-    end
-    return txt
 end
 
 local function construct_upstream_url(cluster_id)
@@ -176,20 +153,9 @@ local function dispatch_sql_request(body)
 end
 
 --[[
-    find_last index of needle in hasystack    
-
-    find_last('ulog_kibana_ulog', '_') return 12
-]]--
-local function find_last(haystack, needle)
-    local i=haystack:match(".*"..needle.."()")
-    if i==nil then return nil else return i-1 end
-end
-
---[[
    kbn_name format: systemid_kibana_ulog
    dispatcher kibana request to differrnt cluster according to kbn_name
 ]]--
-
 local function dispatch_kibana_request()
    local kbnName = string.lower(ngx.var.http_kbn_name)
    local urlKey = "worker_" .. ngx.worker.id()
@@ -213,6 +179,7 @@ local function dispatch_kibana_request()
    end
 end
 
+
 local _M = {}
 
 return setmetatable(_M, {
@@ -228,7 +195,6 @@ return setmetatable(_M, {
         -- for test
 --        construct_upstream_url = construct_upstream_url,
 --        do_dispatch = do_dispatch,
---        find_last = find_last,
 --        is_same_cluster = is_same_cluster,
 --        get_system_id = get_system_id,
     }
