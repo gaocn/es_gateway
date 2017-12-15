@@ -35,9 +35,9 @@ logger.debug(tostring(dispatcher_conf))
 local dispatcher = require "es_gateway.core.request_dispatcher"
 logger.debug(tostring(dispatcher))
 
-
+-- 需要在集成测试环境
 --dispatcher.dispatch_kibana_request()
---dispatcher.dispatch_sql_request(body)
+--dispatcher.dispatch_sql_request()
 --dispatcher.dispatch_request()
 
 
