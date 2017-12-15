@@ -16,8 +16,8 @@
 ]]--
 
 local logger = require "es_gateway.utils.logger"
-local dispatcher_config = require "es_gateway.core.request_dispatcher_config"
 local gateway_conf = require "es_gateway.gateway_conf"
+local dispatcher_config = require "es_gateway.core.request_dispatcher_config"
 
 -- @Refactor 
 -- local config = '/home/sm01/openresty-1.11.2/config'
