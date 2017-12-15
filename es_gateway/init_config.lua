@@ -28,7 +28,7 @@ local ACL_TABLE = gateway_conf.acl_table
 local acl_conf = gateway_conf.acl_conf
 
 
-function load_ACL(fileName)
+local function load_ACL(fileName)
     local acl = assert(io.open(fileName, 'r'))
     for line in acl:lines() do
         if string.match(line, '^#') == nil then
@@ -111,23 +111,22 @@ local welcome = [[
 --**********************************************************************************
 ]]
 
-
-
--- init shared dict, and store it into share momery
-load_ACL(acl_conf)
-
-local fd = assert(io.open(init_config, 'r'))
-local system_cluster_info = fd:read()
-local cluster_info = fd:read()
-fd:close()
-
-logger.debug("System_cluster_info: %s", system_cluster_info)
-logger.debug("cluster_info: %s", cluster_info)
-dispatcher_config.hash_system_cluster_map(gateway_conf, system_cluster_info)
-dispatcher_config.generate_upstreams_conf(gateway_conf, cluster_info)
-
-
 local _M = {}
+
+function _M.init()
+    -- init shared dict, and store it into share momery
+    load_ACL(acl_conf)
+
+    local fd = assert(io.open(init_config, 'r'))
+    local system_cluster_info = fd:read()
+    local cluster_info = fd:read()
+    fd:close()
+
+    logger.debug("System_cluster_info: %s", system_cluster_info)
+    logger.debug("cluster_info: %s", cluster_info)
+    dispatcher_config.hash_system_cluster_map(gateway_conf, system_cluster_info)
+    dispatcher_config.generate_upstreams_conf(gateway_conf, cluster_info)
+end
 
 function _M.welcome()
     logger.debug(welcome)
