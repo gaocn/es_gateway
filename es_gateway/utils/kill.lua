@@ -13,7 +13,7 @@ local cmd_tmpl = [[kill %s `cat %s` > /dev/null 2&>1]]
 
 --[[
 --   signal -0: do nothing
---
+--   NOTES: if nginx is running using root user, then this cmd will always return false
  ]]
 local function kill(pid_file, args)
     logger.debug("sending signal to pid at: %s", pid_file)
