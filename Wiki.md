@@ -15,8 +15,10 @@ metatable通过其包含的函数来给所挂接的table定义一些特殊的操作，包括:
 - __index: 定义当table中不存在的key值被试图获取时的行为
 - __newindex: 定义在table中产生新key值时的行为
 
-## setmetatable用于继承
+## setmetatable用于继承、getmetatable
 setmetatable( obj, { __index = module } ) module为希望继承的模块名。
+
+getmetatable(obj)获取继承的对象
 
 ``` 
     local _S = {
