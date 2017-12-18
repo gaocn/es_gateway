@@ -129,7 +129,6 @@ function _M.init()
 
 
     -- reload upstream configuration from file
-    -- elog#10.230.135.128:9200,10.230.135.127:9600,10.230.135.126:9200;ulog#10.230.135.128:9200,10.230.135.127:9600,10.230.135.126:9200
     dynamic_ups.load(cluster_info)
 end
 

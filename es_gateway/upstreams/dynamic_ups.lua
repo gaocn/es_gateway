@@ -7,11 +7,22 @@
 --  Using this interface  we  can save upstream configuration into file, redis  or databases.
 --
 
+local dispatcher_config =  require "es_gateway.core.request_dispatcher_config"
 local gateway_conf =  require  "es_gateway.gateway_conf"
 local logger = require "es_gateway.utils.logger"
 local str = require "es_gateway.utils.string"
+local cmd =  require "es_gateway.utils.cmd.reload"
+
 local split = str.split
 local upstreams = gateway_conf.upstreams
+
+local typ_checks = {
+    array = function(v) return type(v) == "table" end,
+    string = function(v) return type(v) == "string" end,
+    number = function(v) return type(v) == "number" end,
+    boolean = function(v) return type(v) == "boolean" end,
+    ngx_boolean = function(v) return v == "on" or v == "off" end
+}
 
 local _M = {}
 
@@ -30,6 +41,26 @@ local function load(cluster_info)
         logger.debug("Cluster: %s, Ips: %s", k,  v)
     end
 end
+
+--
+-- @func save: save upstream configuration to file by
+--   call request_dispatcher_config.generate_upstreams_conf(gateway_conf, cluster_info)
+--
+local function save()
+    local cluster_info
+    for k,v in pairs(upstreams)  do
+        if typ_checks.string(k) and typ_checks.string(v) then
+            if cluster_info == nil then
+                cluster_info = string.format("%s#%s", k, v)
+            else
+                cluster_info = string.format("%s;%s#%s", cluster_info, k, v)
+            end
+        end
+    end
+    dispatcher_config.generate_upstreams_conf(gateway_conf, cluster_info)
+    cmd.reload()
+end
+
 
 
 function _M.get(cluster)
@@ -79,13 +110,13 @@ function _M.update(cluster, servers)
 end
 
 
-
 return setmetatable(_M, {
     __tostring = function(tb)
         return "Upstrems Module Used  to configure upstream Dynamically!"
     end,
     __index = {
-        load = load
+        load = load,
+        save =save
     }
 })
 

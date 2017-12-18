@@ -23,4 +23,7 @@ upstreams.update('ulog', server)
 server = "10.233.87.54:9200"
 upstreams.remove('ulog', server)
 
-upstreams.get()
+logger.debug(upstreams.get())
+
+-- test save
+--upstreams.save()

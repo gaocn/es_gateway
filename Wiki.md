@@ -75,6 +75,18 @@ module(name, cb1, cb2, ...)处理流程
 5. 将当前模块的环境设置为mod,同时把package.loaded[name] = mod；
 
 
+## Nginx reload指令
+nginx -s  reload 命令加载修改后的配置文件,命令下达后发生如下事件：
+
+1. Nginx的master进程检查配置文件的正确性，若是错误则返回错误信息，nginx继续采用原配置文件进行工作（因为worker未受到影响）
+
+2. Nginx启动新的worker进程，采用新的配置文件
+
+3. Nginx将新的请求分配新的worker进程
+
+4. Nginx等待以前的worker进程的全部请求已经都返回后，关闭相关worker进程
+
+5. 重复上面过程，知道全部旧的worker进程都被关闭掉
 
 ## 常见错误
 
