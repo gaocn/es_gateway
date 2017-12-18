@@ -1,7 +1,8 @@
 --
 -- User: ¸ßÎÄÎÄ
 -- Date: 2017/12/15
--- Description: 
+-- Description:
+--      string utility functions
 --
 
 local _M = {}
@@ -58,6 +59,58 @@ end
 function _M.find_last(haystack, needle)
     local i=haystack:match(".*"..needle.."()")
     if i==nil then return nil else return i-1 end
+end
+
+
+function _M.startswith(txt, pat)
+    if txt == nil or pat == nil then
+        return nil, "txt or pat parameter is nil"
+    end
+
+    if string.find(txt, pat) ~= 1 then
+        return false
+    else
+        return true
+    end
+end
+
+function  _M.endswith(txt, pat)
+    if txt == nil or pat == nil then
+        return nil, "txt or pat parameter is nil"
+    end
+
+    rtxt = string.reverse(txt)
+    rpat = string.reverse(pat)
+    if string.find(rtxt, rpat) ~= 1 then
+        return false
+    else
+        return true
+    end
+end
+
+
+function _M.lstrip(txt, pat)
+    if txt == nil or pat == nil then
+        return nil, "txt or pat parameter is nil"
+    end
+    local res
+    if _M.startswith(txt, pat) then
+        res = string.sub(txt, #pat + 1)
+        return res
+    end
+    return txt
+end
+
+function _M.rstrip(txt, pat)
+    if txt == nil or pat == nil then
+        return nil, "txt or pat parameter is nil"
+    end
+    local res
+    if _M.endswith(txt, pat) then
+        res = string.sub(txt, 1, #txt - #pat)
+        return res
+    end
+    return txt
 end
 
 return _M

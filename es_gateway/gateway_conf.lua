@@ -18,6 +18,7 @@ gateway_conf = {
     upstream_conf_path ="/home/sm01/openresty-1.11.2/nginx/conf/es_cluster_upstream.conf",
     system_cluster_map = ngx.shared.system_cluster_map,
     acl_table = ngx.shared.acl_table,
+    upstreams = ngx.shared.upstreams,
     acl_conf = "/home/sm01/openresty-1.11.2/lualib/es_gateway/api.acl",
     init_config = "/home/sm01/openresty-1.11.2/config"
 

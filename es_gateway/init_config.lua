@@ -18,6 +18,7 @@
 local logger = require "es_gateway.utils.logger"
 local gateway_conf = require "es_gateway.gateway_conf"
 local dispatcher_config = require "es_gateway.core.request_dispatcher_config"
+local dynamic_ups = require "es_gateway.upstreams.dynamic_ups"
 
 -- @Refactor 
 -- local config = '/home/sm01/openresty-1.11.2/config'
@@ -26,7 +27,6 @@ local dispatcher_config = require "es_gateway.core.request_dispatcher_config"
 local init_config = gateway_conf.init_config
 local ACL_TABLE = gateway_conf.acl_table
 local acl_conf = gateway_conf.acl_conf
-
 
 local function load_ACL(fileName)
     local acl = assert(io.open(fileName, 'r'))
@@ -126,6 +126,11 @@ function _M.init()
     logger.debug("cluster_info: %s", cluster_info)
     dispatcher_config.hash_system_cluster_map(gateway_conf, system_cluster_info)
     dispatcher_config.generate_upstreams_conf(gateway_conf, cluster_info)
+
+
+    -- reload upstream configuration from file
+    -- elog#10.230.135.128:9200,10.230.135.127:9600,10.230.135.126:9200;ulog#10.230.135.128:9200,10.230.135.127:9600,10.230.135.126:9200
+    dynamic_ups.load(cluster_info)
 end
 
 function _M.welcome()
