@@ -76,6 +76,40 @@ module(name, cb1, cb2, ...)处理流程
 4. 依次调用cbs：cb1(mod), cb2(mod),...；
 5. 将当前模块的环境设置为mod,同时把package.loaded[name] = mod；
 
+##  cjson
+
+Lua cjson是一个高性能的JSON解析器和编码器，其性能比纯Lua库要高10~20倍。Lua Json完全 支持UTF-8，不需要其他依赖 Lua/Luajit相关包。
+
+### decode解析JSON
+
+``` 
+    local cjson = require "cjson"
+    local sampleJson = [[{"age":"23",  "testArray":{"array":[8,3,2,12]}, "Himi":"himigame.com"}]]
+    local data = cjson.decode(sampleJson)
+
+    logger.debug(data['age'])
+    logger.debug(type(data['testArray']['array'][1]) == 'number')
+    logger.debug(data['testArray']['array'][1])
+```
+
+### encode编码JSON
+cjson.safe在解析出错时不会抛出异常，而是返回nil
+
+``` 
+    local cjson = require "cjson"
+    --最后 产生json表
+    local jtable = {}
+    jtable["age"] = 100
+    jtable["testArray"] = {}
+    jtable["testArray"][1] = 8
+    jtable["testArray"][2] = 3
+    jtable["testArray"][3] = 2
+    jtable["testArray"][4] = 12
+    jtable["Himi"] = "himigame.com"
+    --将数据编码为json字符串
+    local jStr = cjson.encode(jtable)
+```
+
 
 ## Nginx reload指令
 nginx -s  reload 命令加载修改后的配置文件,命令下达后发生如下事件：

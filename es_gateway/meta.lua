@@ -7,7 +7,7 @@ local version = setmetatable({
     major = 1,
     minor = 11,
     patch = 2,
-    suffix = "suffix"
+    suffix = ".2"
 }, {
     __tostring = function(t)
         return string.format("%d.%d.%d%s", t.major, t.minor, t.patch, t.suffix)
@@ -15,7 +15,7 @@ local version = setmetatable({
 })
 
 return {
-    _NAME = "es_gateway",
+    _NAME = "ULOG API GATEWAY",
     _VERSION = tostring(version),
     _VERSION_TABLE = version,
 
