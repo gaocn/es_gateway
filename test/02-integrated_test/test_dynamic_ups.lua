@@ -27,3 +27,11 @@ logger.debug(upstreams.get())
 
 -- test save
 --upstreams.save()
+--location ~* /upstream/(.+){
+--    content_by_lua '
+--local dy = require "es_gateway.upstreams.dynamic_ups"
+--dy.process()
+--    ';
+--}
+--remove : only one item left
+--
