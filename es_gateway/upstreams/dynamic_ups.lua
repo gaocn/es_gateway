@@ -97,6 +97,10 @@ end
 -- @param server 每一次只能添加一个服务器地址
 --
 function _M.add(cluster, server)
+    if cluster == nil or server == nil then
+        return  false
+    end
+
     --if server exists
     if upstreams[cluster]:find(server) then
         logger.debug("[%s] adding server [%s] already existed!", cluster, server)
@@ -119,6 +123,10 @@ end
 --  NOTE:每次只能删除一个地址
 --
 function _M.remove(cluster, server)
+    if cluster == nil or server == nil then
+        return  false
+    end
+
     local ups = upstreams[cluster]
 
     if cluster ~= nil and server ~= nil then
@@ -152,16 +160,16 @@ end
 --- @func  process: process request from /upstream/*, a temporary method to process upstream configuration
 -- 
 local process_helper = {
-    show = function(cluster, servers)
+    ["/upstream/show"] = function(cluster, servers)
         return _M.get(cluster)
     end,
-    add =  function(cluster, servers)
+    ["/upstream/add"] =  function(cluster, servers)
         return _M.add(cluster, servers)
     end,
-    remove =  function(cluster, servers)
+    ["/upstream/remove"] =  function(cluster, servers)
         return _M.remove(cluster, servers)
     end,
-    update = function(cluster, servers)
+    ["/upstream/update"] = function(cluster, servers)
         return _M.update(cluster, servers)
     end
 }
@@ -169,11 +177,11 @@ local process_helper = {
 local  function process()
     local jsonT
     local request_method = ngx.var.request_method
-    local uri = string.lower(ngx.var.uri)
+    local action = string.lower(ngx.var.uri)
     local http_body = handler.http_body()
     local ret = {}
 
-    logger.debug("Uri: %s, HTTP BODY: %s, Method: %s",  uri, http_body,request_method)
+    logger.debug("Uri: %s, HTTP BODY: %s, Method: %s",  action, http_body,request_method)
 
     if http_body and request_method  == 'POST' then
         jsonT = json.decode(http_body)
@@ -183,7 +191,6 @@ local  function process()
             response.send(400, ret)
         end
 
-        local action =  str.lstrip(uri, '/upstream/')
         if action and process_helper[action] then
             local ok
 
