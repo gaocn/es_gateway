@@ -15,6 +15,10 @@ end
 
 
 local gateway_conf = {
+
+    ---
+    -- GATEWAY NGINX PATH
+    --
     nginx_bin_path = "/home/sm01/openresty-1.11.2/nginx/sbin",
     nginx_pid = "/home/sm01/openresty-1.11.2/nginx/logs/nginx.pid",
     conf_dir = "/home/sm01/openresty-1.11.2/",
@@ -24,16 +28,43 @@ local gateway_conf = {
         "/home/sm01/openresty-1.11.2/nginx/sbin",
     },
 
-    upstream_conf_path ="/home/sm01/openresty-1.11.2/nginx/conf/es_cluster_upstream.conf",
-    acl_conf = "/home/sm01/openresty-1.11.2/lualib/es_gateway/api.acl",
+    ---
+    -- GATEWAY system_id and es_cluster infomation location
+    --
     init_config = "/home/sm01/openresty-1.11.2/config",
 
+    ---
+    --GATEWAY [auto genterated] nginx configuration file path according to @see {init_config}
+    --
+    upstream_conf_path ="/home/sm01/openresty-1.11.2/nginx/conf/es_cluster_upstream.conf",
+
+    ---
+    -- ACCESS CONTROL LIST of upstream servers[ES Servers]'s API and indices, Request Method
+    --
+    acl_conf = "/home/sm01/openresty-1.11.2/lualib/es_gateway/api.acl",
+
+    ---
+    -- lua share dict declaringn in nginx.conf
     -- make sure following 'lua shared dict' declared in nginx.conf
+    --
     system_cluster_map = ngx.shared.system_cluster_map,
     acl_table = ngx.shared.acl_table,
     upstreams = ngx.shared.upstreams,
 
+    ---
+    -- PLUGINS MAP
+    --
     PLUGIN_AVAILABLE = plugin_map,
+
+    ---
+    --  DATABASE CONFIGURATOINS
+    --
+    db_type     = "mysql",
+    db_ip       = "localhost",
+    db_port     = "3306",
+    db_schema   = "gateway",
+    db_username = "root",
+    db_password = "mysql",
 }
 
 
