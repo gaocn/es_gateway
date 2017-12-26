@@ -3,7 +3,7 @@
 -- User: 高文文
 -- Date: 2017/12/7
 -- Description:
---     
+--   注意：发送信号的操作不能对root进程执行成功
 --
 package.path = package.path ..';..\\?.lua';
 

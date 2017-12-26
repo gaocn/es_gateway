@@ -16,8 +16,17 @@ local function reload()
     return msg
 end
 
+local function reload_without_call_mip()
+    ok, msg = signal(gateway_conf, "reload_t")
+    if ok then
+        msg = "reload nginx successfully!"
+    end
+    return msg
+end
+
 return setmetatable({}, {
     __index = {
-        reload = reload
+        reload = reload,
+        reload_without_call_mip = reload_without_call_mip
     }
 })

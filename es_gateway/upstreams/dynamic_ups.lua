@@ -10,8 +10,11 @@
 local dispatcher_config =  require "es_gateway.core.request_dispatcher_config"
 local gateway_conf =  require  "es_gateway.gateway_conf"
 local logger = require "es_gateway.utils.logger"
+local response = require "es_gateway.utils.response"
 local str = require "es_gateway.utils.string"
 local cmd =  require "es_gateway.utils.cmd.reload"
+local handler =  require "es_gateway.core.handler"
+local json  = require "cjson.safe"
 
 local split = str.split
 local upstreams = gateway_conf.upstreams
@@ -42,6 +45,25 @@ local function load(cluster_info)
     end
 end
 
+local  function update_config(cluster_info, system_cluster_info)
+    local fd = assert(io.open(gateway_conf.init_config, 'r'))
+    local fd_system_cluster_info = fd:read()
+    local fd_cluster_info = fd:read()
+    fd:close()
+
+    if cluster_info then
+        fd_cluster_info = cluster_info
+    end
+    if  system_cluster_info then
+        fd_system_cluster_info = system_cluster_info
+    end
+
+    fd = assert(io.open(gateway_conf.init_config, 'w+'))
+    fd:write(string.format("%s\n%s\n",fd_system_cluster_info, fd_cluster_info))
+    fd:close()
+
+end
+
 --
 -- @func save: save upstream configuration to file by
 --   call request_dispatcher_config.generate_upstreams_conf(gateway_conf, cluster_info)
@@ -57,10 +79,9 @@ local function save()
             end
         end
     end
-    dispatcher_config.generate_upstreams_conf(gateway_conf, cluster_info)
-    cmd.reload()
+    update_config(cluster_info)
+    cmd.reload_without_call_mip()
 end
-
 
 
 function _M.get(cluster)
@@ -71,22 +92,41 @@ function _M.get(cluster)
     return nil
 end
 
+---
+-- @param cluster
+-- @param server 每一次只能添加一个服务器地址
+--
 function _M.add(cluster, server)
+    if cluster == nil or server == nil then
+        return  false
+    end
+
     --if server exists
     if upstreams[cluster]:find(server) then
         logger.debug("[%s] adding server [%s] already existed!", cluster, server)
-        return
+        return false
     end
+    --TODO 验证serve的合法性
+
     if cluster ~= nil and server ~= nil then
         upstreams[cluster] = string.format("%s,%s", upstreams[cluster], server)
+        _M.save()
         logger.debug("[%s] add server [%s] target: %s", cluster, server, upstreams[cluster])
+        return true
     end
+    return false
 end
 
--- @funcs  remove
+--- @funcs  remove
 --   @param cluster: 例如10.230.135.128:9200,10.230.135.127:9600
+--  @bug 这是一个bug但是没有修改，原因是：为了保证上有服务器之上有一个可用地址，当仅仅存在一个服务器地址时，删除该服务器地址的操作不生效
+--  NOTE:每次只能删除一个地址
 --
 function _M.remove(cluster, server)
+    if cluster == nil or server == nil then
+        return  false
+    end
+
     local ups = upstreams[cluster]
 
     if cluster ~= nil and server ~= nil then
@@ -97,15 +137,75 @@ function _M.remove(cluster, server)
             upstreams[cluster] = str.rstrip(ups, ','  ..  server)
         elseif s ~= nil and e ~= nil then                          -- 3. server  in the  middle
             upstreams[cluster] = string.format("%s%s", ups:sub(1,s - 1), ups:sub(e + 2, #ups))
+        else
+            return false
         end
+        _M.save()
         logger.debug("[%s] remove server [%s]  target: %s", ups, server, upstreams[cluster])
+        return true
     end
+    return false
 end
 
 function _M.update(cluster, servers)
     if cluster ~= nil and servers ~= nil then
         upstreams[cluster] = servers
+        _M.save()
         logger.debug("update [%s] with servers [%s]", cluster, servers)
+        return true
+    end
+    return false
+end
+
+--- @func  process: process request from /upstream/*, a temporary method to process upstream configuration
+-- 
+local process_helper = {
+    ["/upstream/show"] = function(cluster, servers)
+        return _M.get(cluster)
+    end,
+    ["/upstream/add"] =  function(cluster, servers)
+        return _M.add(cluster, servers)
+    end,
+    ["/upstream/remove"] =  function(cluster, servers)
+        return _M.remove(cluster, servers)
+    end,
+    ["/upstream/update"] = function(cluster, servers)
+        return _M.update(cluster, servers)
+    end
+}
+
+local  function process()
+    local jsonT
+    local request_method = ngx.var.request_method
+    local action = string.lower(ngx.var.uri)
+    local http_body = handler.http_body()
+    local ret = {}
+
+    logger.debug("Uri: %s, HTTP BODY: %s, Method: %s",  action, http_body,request_method)
+
+    if http_body and request_method  == 'POST' then
+        jsonT = json.decode(http_body)
+
+        if not jsonT or not jsonT['cluster'] then
+            ret['message'] = 'Illegal Request Body!'
+            response.send(400, ret)
+        end
+
+        if action and process_helper[action] then
+            local ok
+
+            if jsonT['servers'] then
+                ok =  process_helper[action](jsonT['cluster'], jsonT['servers'])
+            else
+                ok =  process_helper[action](jsonT['cluster'])
+            end
+            ret['result'] = tostring(ok)
+            ret['action'] = action
+            response.send(200, ret)
+        end
+    else
+        ret['message'] = 'Only POST method  is  allowed!'
+        response.send(400, ret)
     end
 end
 
@@ -116,6 +216,7 @@ return setmetatable(_M, {
     end,
     __index = {
         load = load,
-        save =save
+        save =save,
+        process = process
     }
 })
