@@ -205,7 +205,7 @@ local  function process()
             response.send(200, ret)
         end
     else
-        ret['message'] = 'Only POST method  is  allowed!'
+        ret['message'] = 'wrong request method(only POST is allowed) or empty body!'
         response.send(400, ret)
     end
 end
