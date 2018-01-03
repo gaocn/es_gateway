@@ -181,9 +181,10 @@ local  function process()
     local http_body = handler.http_body()
     local ret = {}
 
-    logger.debug("Uri: %s, HTTP BODY: %s, Method: %s",  action, http_body,request_method)
-
     if http_body and request_method  == 'POST' then
+
+        logger.debug("Uri: %s, HTTP BODY: %s, Method: %s",  action, http_body,request_method)
+
         jsonT = json.decode(http_body)
 
         if not jsonT or not jsonT['cluster'] then
