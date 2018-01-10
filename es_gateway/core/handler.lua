@@ -8,24 +8,11 @@
 local logger     = require "es_gateway.utils.logger"
 local dispatcher = require "es_gateway.core.request_dispatcher"
 local str_utils = require "es_gateway.utils.string"
-local escape_line = str_utils.escape_line
+local escape_line = str_utils.split
 
 logger.set_priority(1)
 
 --*********************  function definition  **************************--
-
---[[
-  function: split string into an array
-  eg: str = 'str1, str2, str3'
-    split(str) => {'str1', 'str2', 'str3'}
-]]--
-local function split(str, sep)
-    local sep = sep or "\t"
-    local fields = {}
-    local pattern = string.format("([^%s]+)", sep)
-    string.gsub(str, pattern , function(w) fields[#fields + 1] = escape_line(w) end)
-    return fields
-end
 
 --@func http_body
 --  EG:
