@@ -8,24 +8,11 @@
 local logger     = require "es_gateway.utils.logger"
 local dispatcher = require "es_gateway.core.request_dispatcher"
 local str_utils = require "es_gateway.utils.string"
-local escape_line = str_utils.escape_line
+local split = str_utils.split
 
 logger.set_priority(1)
 
 --*********************  function definition  **************************--
-
---[[
-  function: split string into an array
-  eg: str = 'str1, str2, str3'
-    split(str) => {'str1', 'str2', 'str3'}
-]]--
-local function split(str, sep)
-    local sep = sep or "\t"
-    local fields = {}
-    local pattern = string.format("([^%s]+)", sep)
-    string.gsub(str, pattern , function(w) fields[#fields + 1] = escape_line(w) end)
-    return fields
-end
 
 --@func http_body
 --  EG:
@@ -421,7 +408,6 @@ function preprocess_acl(uri, method)
     end
 end
 
-
 local _M = {}
 
 return setmetatable(_M, {
@@ -438,7 +424,7 @@ return setmetatable(_M, {
         is_allowed = is_allowed,
         is_mget_valid = is_mget_valid,
         is_msearch_valid = is_msearch_valid,
-        is_request_valid = is_refresh_request,
+        is_request_valid = is_request_valid,
         is_refresh_request = is_refresh_request,
         is_default_index_request = is_default_index_request,
 
@@ -448,3 +434,4 @@ return setmetatable(_M, {
         get_msearch_indices = get_msearch_indices
     }
 })
+
