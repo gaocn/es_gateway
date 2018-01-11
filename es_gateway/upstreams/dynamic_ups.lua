@@ -181,9 +181,10 @@ local  function process()
     local http_body = handler.http_body()
     local ret = {}
 
-    logger.debug("Uri: %s, HTTP BODY: %s, Method: %s",  action, http_body,request_method)
-
     if http_body and request_method  == 'POST' then
+
+        logger.debug("Uri: %s, HTTP BODY: %s, Method: %s",  action, http_body,request_method)
+
         jsonT = json.decode(http_body)
 
         if not jsonT or not jsonT['cluster'] then
@@ -204,7 +205,7 @@ local  function process()
             response.send(200, ret)
         end
     else
-        ret['message'] = 'Only POST method  is  allowed!'
+        ret['message'] = 'wrong request method(only POST is allowed) or empty body!'
         response.send(400, ret)
     end
 end

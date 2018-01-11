@@ -1,5 +1,5 @@
 --
--- User: ¸ßÎÄÎÄ
+-- User: é«˜æ–‡æ–‡
 -- Date: 2017/12/25
 -- Description: 
 --
@@ -8,13 +8,12 @@ require "luasql.mysql"
 
 local mysql =luasql.mysql()
 assert(mysql)
+--åˆ›å»ºmysqlè¿æ¥
+--local conn = mysql:connect("","root","gaowenwen","localhost",3306)
+local conn, err = mysql:connect("db_name","root","gaowenwen","localhost",3306)
+assert(conn)
 
---´´½¨mysqlÁ¬½Ó
-local conn, err = mysql:connect("","root","gaowenwen","localhost",3306)
---local conn, err = mysql:connect("db_name","root","gaowenwen","localhost",3306)
-assert(conn, err)
-
---ÉèÖÃÊı¾İ¿â±àÂë¸ñÊ½
+--è®¾ç½®æ•°æ®åº“ç¼–ç æ ¼å¼
 conn:execute("SET NAMES UTF8")
 
 local cur = conn:execute([[SHOW  DATABASES;]])
@@ -35,13 +34,13 @@ while row do
 end
 
 --create databases
---Èô´´½¨³É¹¦ok=1£¬ÈôÊ§°ÜokÎªnil£¬
+--è‹¥åˆ›å»ºæˆåŠŸok=1ï¼Œè‹¥å¤±è´¥okä¸ºnilï¼Œ
 local ok,err = conn:execute([[CREATE DATABASE gateway;]])
 print(ok, err)
 
 conn:execute([[USE gateway;]])
 
---create  table Ö´ĞĞ³É¹¦ok=0£¬errÎªnil£¬·ñÔòokÎª¿Õ£¬errÎª´íÎóÔ­Òò
+--create  table æ‰§è¡ŒæˆåŠŸok=0ï¼Œerrä¸ºnilï¼Œå¦åˆ™okä¸ºç©ºï¼Œerrä¸ºé”™è¯¯åŸå› 
 ok,err  =  conn:execute([[
     CREATE TABLE test(
         id BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
@@ -53,7 +52,7 @@ ok,err  =  conn:execute([[
 ]])
 print(ok, err)
 
---insert Èô´´½¨³É¹¦ok=1±íÊ¾²åÈëÌõÊı¼´Ó°ÏìĞĞÊı£¬ÈôÊ§°ÜokÎªnil
+--insert è‹¥åˆ›å»ºæˆåŠŸok=1è¡¨ç¤ºæ’å…¥æ¡æ•°å³å½±å“è¡Œæ•°ï¼Œè‹¥å¤±è´¥okä¸ºnil
 ok, err = conn:execute([[
     INSERT INTO test(name, description) values('lua1','this is from test_mysql1');
 ]])
@@ -68,7 +67,7 @@ ok, err = conn:execute([[
 ]])
 print(ok, err)
 
---updateÈô´´½¨³É¹¦ok=n±íÊ¾Ó°ÏìĞĞÊı£¬ÈôÊ§°ÜokÎªnil
+--updateè‹¥åˆ›å»ºæˆåŠŸok=nè¡¨ç¤ºå½±å“è¡Œæ•°ï¼Œè‹¥å¤±è´¥okä¸ºnil
 ok, err = conn:execute([[
     UPDATE test SET name="LUA_FORU"
     WHERE id=1
@@ -80,7 +79,7 @@ ok, err = conn:execute([[
 ]])
 print(ok,  err)
 
---delete Èô´´½¨³É¹¦ok=n±íÊ¾Ó°ÏìĞĞÊı£¬ÈôÊ§°ÜokÎªnil
+--delete è‹¥åˆ›å»ºæˆåŠŸok=nè¡¨ç¤ºå½±å“è¡Œæ•°ï¼Œè‹¥å¤±è´¥okä¸ºnil
 ok, err = conn:execute([[
     DELETE FROM test
     WHERE date >= '2017-12-25 10:51:43'
@@ -104,76 +103,25 @@ end
 print("data len: ", #data)
 print("data: ", unpack(data))
 
---truncate table Ö´ĞĞ³É¹¦ok=0£¬errÎªnil£¬·ñÔòokÎª¿Õ£¬errÎª´íÎóÔ­Òò
+--truncate table æ‰§è¡ŒæˆåŠŸok=0ï¼Œerrä¸ºnilï¼Œå¦åˆ™okä¸ºç©ºï¼Œerrä¸ºé”™è¯¯åŸå› 
 --ok, err = conn:execute([[
 --    TRUNCATE TABLE test;
 --]])
 --print(ok, errs)
 
---delete table Ö´ĞĞ³É¹¦ok=0£¬errÎªnil£¬·ñÔòokÎª¿Õ£¬errÎª´íÎóÔ­Òò
+--delete table æ‰§è¡ŒæˆåŠŸok=0ï¼Œerrä¸ºnilï¼Œå¦åˆ™okä¸ºç©ºï¼Œerrä¸ºé”™è¯¯åŸå› 
 --ok, err = conn:execute([[
 --    DROP TABLE test;
 --]])
 --print(ok, errs)
 
---delete database Ö´ĞĞ³É¹¦ok=0£¬errÎªnil£¬·ñÔòokÎª¿Õ£¬errÎª´íÎóÔ­Òò
+--delete database æ‰§è¡ŒæˆåŠŸok=0ï¼Œerrä¸ºnilï¼Œå¦åˆ™okä¸ºç©ºï¼Œerrä¸ºé”™è¯¯åŸå› 
 --ok, err = conn:execute([[
 --    DROP DATABASE gateway1;
 --]])
 --print(ok, errs)
 
---¹Ø±ÕÁ¬½Ó¶ÔÏó
+--å…³é—­è¿æ¥å¯¹è±¡
 conn:close()
---¹Ø±ÕÊı¾İ¿â»·¾³
+--å…³é—­æ•°æ®åº“ç¯å¢ƒ
 mysql:close()
-
-local o  = setmetatable({},{
-    __call = function(_, schema)
-        print('WWWWWWWWWWWWWWWWW')
-        local mt = {}
-        mt.__meta = {
-            __schema  = schema
-        }
-
-        function mt.__index(_, key)
-            print(key)
-        end
-
-        return setmetatable({}, {
-            __call = function(_, tb)
-                print('TTTTTTTT')
-                local m = {}
-                for  k, v in pairs(tb) do
-                    m[k] = v
-                end
-                return setmetatable(m, mt)
-            end
-        })
-    end
-
-})
-
-local schema = {
-    table = 't_test',
-    primary_kay =  'id',
-    fields = {
-        id =  {type = string, unique = true}
-    }
-}
-
-local str_utils = require "es_gateway.utils.string"
-local split = str_utils.split
-
-local reply = "730bac5b_kibana,apm,ararat,araratserver,arrow,asmp,atii_bs,bac,bdp_ubs,beehive,boor,btcm,cccs,ccob,chargesystem,cmcs,cms,cofsp,csr,csup,e3c-asdispatcher,e3c-mip,e3cmonitor,e3cmonitor2cm,e3cmonitor2etcm,e3cmonitor-as,ebafs,ebb,ebfee,ebfeemb,ebftest,ebf-test,ebim,ebiz,ebms,ebom,ebup,ebupccsbz2,ebupccsbz3,ebupccsint,ebupdetail,ebus,erps,fpbqs,fpbqsservice,fqz_ebus,fqz_mbank,fqz_perbank,hanfeng,heartbeatlog_beehive,ics3,iept,ikms,logstash,mbank,mcs3,mocktest,oauth,obs,obs1,obs-filebeat,oebs-de,oebs-jp,oebs-sg,oibs-lux,oibs-luxbr,opuup,panadmin,perbank,perbankapps,perbanktaskschedule,pperbank,pprefix,ptp,qpay,qpayxn,ship,sjsh-jfbatch,sjsh-jfopenweb,sjsh-jfpcweb,sjsh-jfservice,sjsh-jfweb,sjsh-manageweb,sjsh-refservice,sjsh-refweb,sjsh-service,sjsh-yhbatch,sjsh-yhnmservice,sjsh-yhservice,sjsh-yhweb,sjsh-yhwifiweb,sjsh-yxbatch,sjsh-yxservice,sjsh-yxweb,sjsh-yxwxweb,taihang,udesk,ulog,uloggateway,upayrecon,wbp,wcss,zft"
-local indices = split('ararat,araratserver', ',')
-local replyT = split(reply, ',')
-
-if type(replyT) ~= 'string' then
-    print("parameter[AuthIndices] must be a string")
-    replyT = tostring(unpack(replyT))
-end
-
-
-for _, v in ipairs(indices) do
-    print(replyT:find(v))
-end
