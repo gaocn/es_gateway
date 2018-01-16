@@ -34,7 +34,8 @@ local gateway_conf = {
     nginx_dir = base_dir  .. "openresty-1.11.2/nginx/",
     conf = base_dir  .. "openresty-1.11.2/nginx/conf/nginx.conf",
     nginx_search_paths = {
-        base_dir  .. "openresty-1.11.2/nginx/sbin",
+        base_dir  .. "openresty-1.11.2/nginx/sbin",  -- 用于搜索nginx可执行文件
+        base_dir  .. "openresty-1.11.2/",  -- 用于搜索default_nginx.sh脚本
     },
 
     ---
@@ -56,9 +57,9 @@ local gateway_conf = {
     -- lua share dict declaringn in nginx.conf
     -- make sure following 'lua shared dict' declared in nginx.conf
     --
---    system_cluster_map = ngx.shared.system_cluster_map,
---    acl_table = ngx.shared.acl_table,
---    upstreams = ngx.shared.upstreams,
+    system_cluster_map = ngx.shared.system_cluster_map,
+    acl_table = ngx.shared.acl_table,
+    upstreams = ngx.shared.upstreams,
 
     ---
     -- PLUGINS MAP
