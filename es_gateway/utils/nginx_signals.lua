@@ -7,6 +7,7 @@
 
 local pl_path = require "pl.path"
 local meta = require "es_gateway.meta"
+local gw_conf = require "es_gateway.gateway_conf"
 local kill = require "es_gateway.utils.kill"
 local logger = require "es_gateway.utils.logger"
 local verison = require "es_gateway.utils.version"
@@ -14,10 +15,11 @@ local fmt = string.format
 
 local nginx_bin_name = "nginx"
 local nginx_helper_shell_name = "default_nginx.sh"
-local nginx_search_paths = {
-    "/home/sm01/openresty-1.11.2/nginx/sbin",
-    "/home/sm01/openresty-1.11.2"
-}
+local nginx_search_paths = gw_conf.nginx_search_paths
+--{
+--    "/home/sm01/openresty-1.11.2/nginx/sbin",
+--    "/home/sm01/openresty-1.11.2"
+--}
 
 local nginx_version_pattern = "^nginx version: openresty/([%d%.]+)$"
 local nginx_compatible = unpack(meta._DEPENDENCIES.openresty)
