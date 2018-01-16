@@ -34,8 +34,8 @@ local gateway_conf = {
     nginx_dir = base_dir  .. "openresty-1.11.2/nginx/",
     conf = base_dir  .. "openresty-1.11.2/nginx/conf/nginx.conf",
     nginx_search_paths = {
-        base_dir  .. "openresty-1.11.2/nginx/sbin",
-        base_dir  .. "openresty-1.11.2/",
+        base_dir  .. "openresty-1.11.2/nginx/sbin",  -- 用于搜索nginx可执行文件
+        base_dir  .. "openresty-1.11.2/",  -- 用于搜索default_nginx.sh脚本
     },
 
     ---
