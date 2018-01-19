@@ -41,7 +41,9 @@ local function process()
         handler.preprocess_acl(uri, requestMethod)
         handler.process_request(uri, requestMethod, indices)
     else
-        indices[#indices + 1] = kbnName
+
+        --不能将kibana索引名自动加载授权索引中去，需要在UlogPortal中配置
+        --indices[#indices + 1] = kbnName
         handler.process_kibana_request(uri, kbnName, indices)
     end
 end
