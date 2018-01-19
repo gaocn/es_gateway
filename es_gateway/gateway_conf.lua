@@ -3,13 +3,32 @@
 -- Date: 2017/12/6
 -- Description:
 --
+
+
+
+
+
 --
 --################################################################
 --                      GLOBAL CONFIGURATIONS                    #
 --################################################################
 
-local base_dir = [[/home/sm01/]]
+local base_dir = [[/home/sm01/openresty-1.11.2/]]
 
+--###############################################################
+--    retrieve working directory of es_gateway automatically
+--      then set @{base_dir}
+--###############################################################
+local sh =  require "es_gateway.utils.cmd.shell"
+local shell = sh.shell
+
+local ok = shell("pwd")
+if ok then
+    base_dir = ok .. "/"
+    print("Base_dir: ", ok);
+    else
+    error("Can not fetch home directory of Openresty!")
+end
 
 --
 --################################################################
@@ -17,6 +36,7 @@ local base_dir = [[/home/sm01/]]
 
 local plugins = {
     "request_termination",
+    "traffic_limit",
 }
 
 local  plugin_map = {}
@@ -28,30 +48,30 @@ local gateway_conf = {
     ---
     -- GATEWAY NGINX PATH
     --
-    nginx_bin_path = base_dir  .. "openresty-1.11.2/nginx/sbin",
-    nginx_pid = base_dir  .. "openresty-1.11.2/nginx/logs/nginx.pid",
-    conf_dir = base_dir  .. "openresty-1.11.2/",
-    nginx_dir = base_dir  .. "openresty-1.11.2/nginx/",
-    conf = base_dir  .. "openresty-1.11.2/nginx/conf/nginx.conf",
+    nginx_bin_path = base_dir  .. "nginx/sbin",
+    nginx_pid = base_dir  .. "nginx/logs/nginx.pid",
+    conf_dir = base_dir,
+    nginx_dir = base_dir  .. "nginx/",
+    conf = base_dir  .. "nginx/conf/nginx.conf",
     nginx_search_paths = {
-        base_dir  .. "openresty-1.11.2/nginx/sbin",  -- 用于搜索nginx可执行文件
-        base_dir  .. "openresty-1.11.2/",  -- 用于搜索default_nginx.sh脚本
+        base_dir  .. "nginx/sbin",  -- 用于搜索nginx可执行文件
+        base_dir,  -- 用于搜索default_nginx.sh脚本
     },
 
     ---
     -- GATEWAY system_id and es_cluster infomation location
     --
-    init_config = base_dir  .. "openresty-1.11.2/config",
+    init_config = base_dir  .. "config",
 
     ---
     --GATEWAY [auto genterated] nginx configuration file path according to @see {init_config}
     --
-    upstream_conf_path = base_dir  .. "openresty-1.11.2/nginx/conf/es_cluster_upstream.conf",
+    upstream_conf_path = base_dir  .. "nginx/conf/es_cluster_upstream.conf",
 
     ---
     -- ACCESS CONTROL LIST of upstream servers[ES Servers]'s API and indices, Request Method
     --
-    acl_conf = base_dir  .. "openresty-1.11.2/lualib/es_gateway/api.acl",
+    acl_conf = base_dir  .. "lualib/es_gateway/api.acl",
 
     ---
     -- lua share dict declaringn in nginx.conf
