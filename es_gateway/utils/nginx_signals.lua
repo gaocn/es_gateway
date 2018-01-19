@@ -4,62 +4,21 @@
 -- Description:
 --     used to send signals to nginx process, such as: reload, stop , start,
 --
-
 local pl_path = require "pl.path"
 local meta = require "es_gateway.meta"
 local gw_conf = require "es_gateway.gateway_conf"
 local kill = require "es_gateway.utils.kill"
 local logger = require "es_gateway.utils.logger"
 local verison = require "es_gateway.utils.version"
+local sh =  require "es_gateway.utils.cmd.shell"
+local shell = sh.shell
 local fmt = string.format
 
 local nginx_bin_name = "nginx"
 local nginx_helper_shell_name = "default_nginx.sh"
 local nginx_search_paths = gw_conf.nginx_search_paths
---{
---    "/home/sm01/openresty-1.11.2/nginx/sbin",
---    "/home/sm01/openresty-1.11.2"
---}
-
-local nginx_version_pattern = "^nginx version: openresty/([%d%.]+)$"
 local nginx_compatible = unpack(meta._DEPENDENCIES.openresty)
-
-
--- @func trim_and_delete_LF: trim space and delete LF from string
---   @param s: stirng
--- @returns
---   @param o: cmd output  
-local function trim_and_delete_LF(s)
-    return string.gsub(s, "^%s*(.-)%s*[\n]*$", "%1")
-end
-
--- @func shell: Perform a shell command and return its output
---   @param c: command
--- @returns
---   @param o: output, or nil if error
--- NOTES: out_file_name out path is: /home/sm01/openresty-1.11.2/lua.output
-local function shell (c)
-    if not c then 
-        logger.warn("shell cmd is nil")
-        return nil  
-    end
-    local out_file_name = "lua.output"
-    local ok = os.execute (fmt("%s > %s 2>&1", c, out_file_name))
-    local fd
-    local o
-    if ok then
-        fd = assert(io.open(out_file_name))
-        o = fd:read ("*a")
-        fd:close ()
-    end
-
-    -- delete out_file_name
-    os.remove(out_file_name)
-    if not o then
-        return nil
-    end
-    return trim_and_delete_LF(o)
-end
+local nginx_version_pattern = "^nginx version: openresty/([%d%.]+)$"
 
 --
 --  @func is_openresty: Test if this openresty verison is compatiable with meta._DEPENDENCIES.openresty
