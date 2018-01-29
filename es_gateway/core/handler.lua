@@ -8,7 +8,7 @@
 local logger     = require "es_gateway.utils.logger"
 local dispatcher = require "es_gateway.core.request_dispatcher"
 local str_utils = require "es_gateway.utils.string"
-local escape_line = str_utils.split
+local split = str_utils.split
 
 logger.set_priority(1)
 
