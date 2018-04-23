@@ -216,14 +216,20 @@ function process_kibana_request(uri, kbnName, authIndices)
     --particularProcessForKibanaInProductEnv(ngx.var.uri, ngx.var.request_uri)
 
     if uri == '/' and ngx.var.request_method == 'HEAD' then
-        --ngx.exec("@upstreams")
-        dispatcher.dispatch_kibana_request()
+        -- true: do not dispatcher request by tribe node
+        dispatcher.dispatch_kibana_request(true)
     end
 
     if string.find(uri, '/_nodes') ~= nil then
-        --ngx.exec("@upstreams")
-        dispatcher.dispatch_kibana_request()
+        -- true: do not dispatcher request by tribe node
+        dispatcher.dispatch_kibana_request(true)
     end
+
+    if string.find(uri, '/_nodes/_local') ~= nil then
+        -- true: do not dispatcher request by tribe node
+        dispatcher.dispatch_kibana_request(true)
+    end
+
     pattern = '/_cluster/health/' .. kbnName
     if string.find(uri, pattern) then
         --ngx.exec("@upstreams")
