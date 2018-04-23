@@ -234,6 +234,15 @@ function process_kibana_request(uri, kbnName, authIndices)
     if string.find(uri, pattern) then
         dispatcher.dispatch_kibana_request(true)
     end
+
+    -- request with prefix '/<kibana_index_name>' show be dispatched
+    --   to corresponding client nodes, instead of tribe nodes
+    --
+    prefix = '/'  ..  kbnName
+    if string.find(uri, prefix) ~= nil then
+        dispatcher.dispatch_kibana_request(true)
+    end
+
     -- allow kibana's export and import funciton
     if string.find(uri, '/_search/scroll') ~= nil then
         --ngx.exec("@upstreams")
@@ -249,15 +258,12 @@ function process_kibana_request(uri, kbnName, authIndices)
         dispatcher.dispatch_kibana_request()
     end
 
-
     -- allow _refresh API
     if is_refresh_request(uri) then
-        --ngx.exec("@upstreams")
         dispatcher.dispatch_kibana_request()
     end
     -- allow /defaultIndex API
     if is_default_index_request(uri) then
-        --ngx.exec("@upstreams")
         dispatcher.dispatch_kibana_request()
     end
     -- get request body, reutrn nil if there is no body
@@ -267,8 +273,6 @@ function process_kibana_request(uri, kbnName, authIndices)
     --if string.find(uri, '/es_admin/_mget') ~= nil then
     if string.find(uri, '/_mget') ~= nil and httpbody ~= nil then
         if is_mget_valid(kbnName, httpbody) then
-            --ngx.say('passed')
-            --ngx.exec("@upstreams")
             dispatcher.dispatch_kibana_request()
         else
             ngx.exit(ngx.HTTP_FORBIDDEN)
