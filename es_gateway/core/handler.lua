@@ -232,8 +232,7 @@ function process_kibana_request(uri, kbnName, authIndices)
 
     pattern = '/_cluster/health/' .. kbnName
     if string.find(uri, pattern) then
-        --ngx.exec("@upstreams")
-        dispatcher.dispatch_kibana_request()
+        dispatcher.dispatch_kibana_request(true)
     end
     -- allow kibana's export and import funciton
     if string.find(uri, '/_search/scroll') ~= nil then
