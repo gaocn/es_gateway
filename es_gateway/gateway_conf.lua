@@ -76,6 +76,8 @@ local gateway_conf = {
     acl_table = ngx.shared.acl_table,
     upstreams = ngx.shared.upstreams,
 
+    ULOG_TRIBE_CLUSTER_NAME  = 'tribe',
+
     ---
     -- PLUGINS MAP
     --

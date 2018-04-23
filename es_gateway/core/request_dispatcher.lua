@@ -152,11 +152,14 @@ local function dispatch_sql_request(body)
     end
 end
 
---[[
-   kbn_name format: systemid_kibana_ulog
-   dispatcher kibana request to differrnt cluster according to kbn_name
-]]--
-local function dispatch_kibana_request()
+--
+--@func dispatch_kibana_request:
+--   dispatcher kibana request to differrnt cluster according to kbn_name
+--Note:
+--   kbn_name format: systemid_kibana_ulog
+--@params not_dispatch_by_tribe: do not dispatch by tribe node
+--
+local function dispatch_kibana_request(not_dispatch_by_tribe)
    local kbnName = string.lower(ngx.var.http_kbn_name)
    local urlKey = "worker_" .. ngx.worker.id()
  
@@ -169,7 +172,14 @@ local function dispatch_kibana_request()
            logger.warn("can not find es cluster name from kbn_name[%s]!", kbnName)
            ngx.exit(ngx.HTTP_FORBIDDEN)
        end
-       url = construct_upstream_url(clusterID)
+
+       if not_dispatch_by_tribe  then
+           url = construct_upstream_url(clusterID)
+       else
+           -- ULOG Tribe cluster name
+           url = construct_upstream_url(gateway_conf.ULOG_TRIBE_CLUSTER_NAME)
+           --url = construct_upstream_url('tribe')
+       end
        ngx.shared.system_cluster_map[urlKey] = url
        logger.debug("proxy_pass: %s", url)
        ngx.exec('@dispatcher')
