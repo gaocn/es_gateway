@@ -38,7 +38,7 @@ local function generate_upstream_conf_helper(upstream_conf_file_path, upstream_n
     end
     
     for _, addr in ipairs(split(addresses, ',')) do
-        addr = 'server ' .. addr .. ' weight=1 max_fails=2 fail_timeout=10;\n'
+        addr = 'server ' .. addr .. '9200' .. ' weight=1 max_fails=2 fail_timeout=10;\n'
         logger.debug(addr)
         if file:write(addr) == nil then
             logger.debug('write file %s failed!', upstream_conf_file_path)
