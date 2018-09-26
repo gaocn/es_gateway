@@ -157,7 +157,7 @@ end
 --   dispatcher kibana request to differrnt cluster according to kbn_name
 --Note:
 --   kbn_name format: systemid_kibana_ulog
---@params not_dispatch_by_tribe: do not dispatch by tribe node
+--@params not_dispatch_by_tribe: do not dispatch request by tribe node
 --
 local function dispatch_kibana_request(not_dispatch_by_tribe)
    local kbnName = string.lower(ngx.var.http_kbn_name)
@@ -178,6 +178,8 @@ local function dispatch_kibana_request(not_dispatch_by_tribe)
        else
            -- ULOG Tribe cluster name
            url = construct_upstream_url(gateway_conf.ULOG_TRIBE_CLUSTER_NAME)
+           -- 可以复用分发机制
+           --dispatch_request()
            --url = construct_upstream_url('tribe')
        end
        ngx.shared.system_cluster_map[urlKey] = url
@@ -194,18 +196,13 @@ local _M = {}
 
 return setmetatable(_M, {
     __tostring = function(tb) 
-        return "[Request Dispatcher do allocation requests to corresponding upstream!]"
-    end
-    ,
+        return "[Request Dispatcher do allocate requests to corresponding upstream!]"
+    end,
+
     __index = {
         dispatch_kibana_request = dispatch_kibana_request,
         dispatch_sql_request = dispatch_sql_request,
         dispatch_request = dispatch_request,
 
-        -- for test
---        construct_upstream_url = construct_upstream_url,
---        do_dispatch = do_dispatch,
---        is_same_cluster = is_same_cluster,
---        get_system_id = get_system_id,
     }
 })

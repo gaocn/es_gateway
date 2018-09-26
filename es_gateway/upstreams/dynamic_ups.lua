@@ -1,5 +1,5 @@
 --
--- User: 高文文
+-- User: gww
 -- Date: 2017/12/18
 -- Description:
 --    using this module, we can dynamicly add/remove/update upstreams servers,
@@ -94,7 +94,7 @@ end
 
 ---
 -- @param cluster
--- @param server 每一次只能添加一个服务器地址
+-- @param server one server address once a time
 --
 function _M.add(cluster, server)
     if cluster == nil or server == nil then
@@ -119,8 +119,8 @@ end
 
 --- @funcs  remove
 --   @param cluster: 例如10.230.135.128:9200,10.230.135.127:9600
---  @bug 这是一个bug但是没有修改，原因是：为了保证上有服务器之上有一个可用地址，当仅仅存在一个服务器地址时，删除该服务器地址的操作不生效
---  NOTE:每次只能删除一个地址
+--  @bug 这可能是一个bug但是没有修改，原因是：为了保证上有服务器之上有一个可用地址，当仅仅存在一个服务器地址时，删除该服务器地址的操作不生效
+--  NOTE: delete a server address once a time
 --
 function _M.remove(cluster, server)
     if cluster == nil or server == nil then

@@ -1,5 +1,5 @@
 --
--- User: 高文文
+-- User: gww
 -- Date: 2017/12/6
 -- Description:
 --
@@ -49,8 +49,8 @@ local gateway_conf = {
     nginx_dir = base_dir  .. "nginx/",
     conf = base_dir  .. "nginx/conf/nginx.conf",
     nginx_search_paths = {
-        base_dir  .. "nginx/sbin",  -- 用于搜索nginx可执行文件
-        base_dir,  -- 用于搜索default_nginx.sh脚本
+        base_dir  .. "nginx/sbin",  -- used for searching `nginx` executable file
+        base_dir,  -- used for searching `default_nginx.sh` script
     },
 
     ---
