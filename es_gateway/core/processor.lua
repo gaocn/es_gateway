@@ -41,6 +41,7 @@ local function process()
         handler.preprocess_acl(uri, requestMethod)
         handler.process_request(uri, requestMethod, indices)
     else
+        handler.preprocess_acl(uri, requestMethod)
         handler.process_kibana_request(uri, kbnName, indices)
     end
 end
