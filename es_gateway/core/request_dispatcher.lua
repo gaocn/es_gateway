@@ -134,7 +134,7 @@ local function dispatch_request()
     do_dispatch(ngx.var.uri)
 end
 
---[[
+--[[@deprecated
     dispatcher SQL Request to specific ES_Cluster.
     NOTE: 
         Only SELECT SQL Statement is allowed!
@@ -142,15 +142,15 @@ end
         curl -XPOST http://gateway/_sql -d'SELECT * from indexName limit 10'
     @body: SQL Statement in lower case
 ]]--
-local function dispatch_sql_request(body)
-    -- NOT SELECT statement, should forbbiden!
-    if string.match(string.lower(body), 'select') then
-        do_dispatch(body)
-    else
-        logger.warn("only SELECT statements is allowed!")
-        ngx.exit(ngx.HTTP_FORBIDDEN)
-    end
-end
+--local function dispatch_sql_request(body)
+--    -- NOT SELECT statement, should forbbiden!
+--    if string.match(string.lower(body), 'select') then
+--        do_dispatch(body)
+--    else
+--        logger.warn("only SELECT statements is allowed!")
+--        ngx.exit(ngx.HTTP_FORBIDDEN)
+--    end
+--end
 
 --
 --@func dispatch_kibana_request:

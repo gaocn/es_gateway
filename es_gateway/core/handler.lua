@@ -398,7 +398,7 @@ end
 function permit_exception_uri(uri)
     if uri == '/_search/scroll' then
         --ngx.exec("@upstreams")
-        dispatcher.dispatchr_request()
+        dispatcher.dispatch_request()
     end
 end
 
@@ -412,9 +412,10 @@ function preprocess_acl(uri, method)
         ngx.exit(ngx.HTTP_FORBIDDEN)
     end
 
-    if simpleUri == '/_sql' then
-        dispatcher.dispatch_sql_request(http_body())
-    end
+--    @deprecated function
+--    if simpleUri == '/_sql' then
+--        dispatcher.dispatch_sql_request(http_body())
+--    end
 end
 
 
