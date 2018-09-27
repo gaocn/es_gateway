@@ -101,7 +101,7 @@ local function construct_upstream_url(cluster_id)
     return url
 end
 
---[[
+--[[@deprecated
     1. get system id from data
     2. determine upstream to which this requests is dispatched using ngx.shared.system_cluster_map
     3. call ngx.exec to dispatch request
@@ -131,7 +131,13 @@ end
     dispatch request according to requset_uri
 ]]--
 local function dispatch_request()
-    do_dispatch(ngx.var.uri)
+    --do_dispatch(ngx.var.uri)
+    local urlKey = "worker_" .. ngx.worker.id()
+    -- all search requests will be dispatched to tribe cluster
+    local url = construct_upstream_url(gateway_conf.ULOG_TRIBE_CLUSTER_NAME)
+    logger.debug("proxy_pass: %s", url)
+    ngx.shared.system_cluster_map[urlKey] = url
+    ngx.exec('@dispatcher')
 end
 
 --[[@deprecated
@@ -203,6 +209,5 @@ return setmetatable(_M, {
         dispatch_kibana_request = dispatch_kibana_request,
         dispatch_sql_request = dispatch_sql_request,
         dispatch_request = dispatch_request,
-
     }
 })
