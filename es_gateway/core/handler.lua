@@ -410,6 +410,10 @@ function preprocess_acl(uri, method)
     --logger.debug(uri, '===', simpleUri, '---', status)
     if status == false then
         ngx.exit(ngx.HTTP_FORBIDDEN)
+    elseif status  == true then
+        -- for API start with _£¬ such as _cat£¬_template and so on
+        -- if API is allowed in configuration file 'api.acl'£¬then the request is permitted!
+        dispatcher.dispatch_request()
     end
 
 --    @deprecated function
