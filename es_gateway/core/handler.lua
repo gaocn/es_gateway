@@ -294,6 +294,9 @@ function process_kibana_request(uri, kbnName, authIndices)
         ngx.exit(ngx.HTTP_FORBIDDEN)
     end
 
+    -- control es api using 'api.acl'
+    preprocess_acl(uri, ngx.var.request_method)
+
     -- if uri contains indices that match any of authIndices, then we rewrite request, otherwise return 403
     post_process_kibana_request(uri,  authIndices)
 end
@@ -421,7 +424,6 @@ function preprocess_acl(uri, method)
 --        dispatcher.dispatch_sql_request(http_body())
 --    end
 end
-
 
 local _M = {}
 
